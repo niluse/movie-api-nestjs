@@ -7,6 +7,11 @@ import { UpdateMovieDto } from './dto/update-movie.dto';
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
+  @Get()
+  async getMovies():Promise<CreateMovieDto[]>{
+    return this.moviesService.getMovies()
+  }
+
   @Post()
   create(@Body() createMovieDto: CreateMovieDto) {
     return this.moviesService.create(createMovieDto);

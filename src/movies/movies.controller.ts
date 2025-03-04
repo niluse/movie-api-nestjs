@@ -1,15 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ValidationPipe } from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
+import { query } from 'express';
+import { GetMoviesDto } from './dto/get-movies.dto';
 
 @Controller('movies')
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
   @Get('get-movie-details')
-  async getMovieDetails(@Query('limit') limit:number):Promise<CreateMovieDto[]>{
-    const movies = await this.moviesService.getMovies(+limit)
+  async getMovieDetails(@Query(new ValidationPipe({transform:true})) query:GetMoviesDto):Promise<CreateMovieDto[]>{
+    const {limit,release_date} = query
+    const movies = await this.moviesService.getMovies(limit,release_date)
     return movies
   }
 

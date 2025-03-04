@@ -65,7 +65,7 @@ export class CreateMovieDto {
     genres: GenreDto[];
 
     @IsOptional()
-    homepage: any;
+    homepage: string;
     
     @IsInt()
     @IsPositive()
@@ -129,7 +129,7 @@ export class CreateMovieDto {
     @IsString()
     status: string;
     
-    //* Empty string kabul ediyor muuu??
+    @IsOptional()
     @IsString()
     tagline: string;
     

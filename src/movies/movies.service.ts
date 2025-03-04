@@ -8,22 +8,23 @@ dotenv.config()
 
 @Injectable()
 export class MoviesService {
+  private readonly URL = process.env.TMDB_API_URL ?? (() => { throw new Error('problem with tmdb url') })();
+  private readonly API_KEY = process.env.TMDB_API_KEY ?? (()=>{throw new Error('problem with tmdb api key')})()
 
-  async getMovies():Promise<CreateMovieDto[]>{
-    const URL = process.env.TMDB_API_URL ?? (() => { throw new Error('problem with tmdb url') })();
-    const API_KEY = process.env.TMDB_API_KEY ?? (()=>{throw new Error('problem with tmdb api key')})()
-    const params = {
-      api_key: API_KEY,
-      // sort_by: 'release_date.asc',
-      vote_count_gte: 1500,
-      vote_average_gte: 8.4,
-      with_watch_providers: 8,
-      watch_region: 'TR',
-      sort_by: 'vote_average.desc',  // Sıralamayı oy ortalamasına göre yap
-    }
-
-    const response = await axios.get(URL, { params });
-    return response.data.results.slice(0, 5);
+  async getMovies(limit:number):Promise<CreateMovieDto[]>{
+    const {data} = await axios.get(`${this.URL}?api_key=${this.API_KEY}`);
+    const newLimit= limit+1
+    const filteredMovies = data.results
+      .filter(
+        (movie)=> movie.vote_count > 1500 && movie.vote_average > 7.0
+      )
+      .sort(
+        (a, b) =>
+          new Date(a.release_date).getTime() - new Date(b.release_date).getTime(),
+      )
+      .slice(0,(newLimit))
+      
+    return filteredMovies
   }
 
   create(createMovieDto: CreateMovieDto) {

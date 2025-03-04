@@ -8,7 +8,7 @@ export class GetMoviesDto{
     @Type(()=>Number)   //* URL den gelen string i number a cevirir 
     limit:number
 
-    @ApiPropertyOptional({example:'2020-01-01'})
+    @ApiPropertyOptional({example:'2020-01-01', description: 'Filter movies released after this year'})
     @IsString()
     @IsOptional()
     release_date?:string

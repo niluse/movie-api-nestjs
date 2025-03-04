@@ -21,16 +21,17 @@ export class MoviesService {
     const {data} = await axios.get(`${this.URL}?api_key=${this.API_KEY}`,{
       params:{
         api_key:this.API_KEY,
+        sort_by:'primary_release_date.asc',
         'vote_count.gte': 1500, // gte = greater than or equal
         'vote_average.gte': 8.4,
-        ...(release_date && {'release_date.gte':release_date}),  //* ... ile optional parametre dinamik olarak eklenmis olur
-        sort_by:'release_date.asc',
+        ...(release_date && {'primary_release_date.gte':release_date}),  //* ... ile optional parametre dinamik olarak eklenmis olur
       }
     });
 
 
     console.log(release_date,'\n', typeof(release_date))
     console.log('api dan gelen:', typeof(data.results[0].release_date))
+    console.log(data.results[0].release_date)
     return data.results.slice(0,limit)
   }
 
